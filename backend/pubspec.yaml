@@ -1,0 +1,12 @@
+name: backend
+description: FMI Schedule backend
+version: 1.0.0
+
+environment:
+  sdk: '^3.7.0'
+
+dependencies:
+  shelf: ^1.4.0
+  shelf_router: ^1.1.3
+  postgres: ^2.6.4
+  dotenv: ^4.0.1
