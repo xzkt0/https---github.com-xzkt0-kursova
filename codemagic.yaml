@@ -18,6 +18,6 @@ workflows:
       - name: Build iOS (no codesign)
         script: |
           cd fmi_schedule
-          flutter build ios --debug --no-codesign
+          flutter build ios --release --no-codesign
     artifacts:
       - fmi_schedule/build/ios/iphoneos/Runner.app
