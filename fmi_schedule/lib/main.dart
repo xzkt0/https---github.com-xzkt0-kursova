@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
@@ -12,7 +13,9 @@ void main() async {
 
   if (!kIsWeb) {
     await NotificationService.initialize();
-    await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+    if (Platform.isAndroid) {
+      await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+    }
   }
 
   runApp(const FmiScheduleApp());
