@@ -8,5 +8,7 @@ environment:
 dependencies:
   shelf: ^1.4.0
   shelf_router: ^1.1.3
-  postgres: ^2.6.4
   dotenv: ^4.0.1
+  http: ^1.0.0
+  postgres: ^2.6.4
+
