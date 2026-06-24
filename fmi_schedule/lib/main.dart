@@ -8,17 +8,41 @@ import 'services/user_preferences.dart';
 import 'services/notification_service.dart';
 import 'services/background_monitor.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
-    await NotificationService.initialize();
+    await NotificationService.initialize(onAlarmTapped: _showAlarmDialog);
     if (Platform.isAndroid) {
       await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
     }
   }
 
   runApp(const FmiScheduleApp());
+}
+
+void _showAlarmDialog() {
+  final context = navigatorKey.currentContext;
+  if (context == null) return;
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => AlertDialog(
+      title: const Text('⏰ Час вставати!'),
+      content: const Text('Будильник спрацював. Вимкнути?'),
+      actions: [
+        TextButton(
+          onPressed: () {
+            NotificationService.cancelAlarm();
+            Navigator.of(context).pop();
+          },
+          child: const Text('Вимкнути будильник'),
+        ),
+      ],
+    ),
+  );
 }
 
 class FmiScheduleApp extends StatefulWidget {
@@ -50,6 +74,7 @@ class _FmiScheduleAppState extends State<FmiScheduleApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: isDarkTheme ? ThemeData.dark() : ThemeData.light(),
       home: _isRegistered == null

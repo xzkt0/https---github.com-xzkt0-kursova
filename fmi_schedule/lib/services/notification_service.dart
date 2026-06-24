@@ -7,21 +7,20 @@ import 'package:timezone/data/latest.dart' as tz_data;
 
 bool get _supported => !kIsWeb && (Platform.isAndroid || Platform.isIOS);
 
-// v2 — Android кешує параметри каналу, новий ID примушує створити канал
-// з правильними налаштуваннями (alarm audio stream, вібрація)
 const _alarmChannelId = 'fmi_alarm_v2';
 const _monitorChannelId = 'fmi_monitor_v1';
 const _alarmNotifId = 1;
 const _monitorNotifId = 2;
 
-// Патерн вібрації: пауза → вібро → пауза → вібро ...
 final _vibrationPattern = Int64List.fromList([0, 800, 300, 800, 300, 800]);
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
   static bool _initialized = false;
+  static void Function()? _onAlarmTapped;
 
-  static Future<void> initialize() async {
+  static Future<void> initialize({void Function()? onAlarmTapped}) async {
+    _onAlarmTapped = onAlarmTapped;
     if (!_supported || _initialized) return;
     tz_data.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('Europe/Kiev'));
@@ -41,9 +40,16 @@ class NotificationService {
       iOS: darwinSettings,
     );
 
-    await _plugin.initialize(settings);
+    await _plugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (details) {
+        if (details.id == _alarmNotifId) {
+          _onAlarmTapped?.call();
+        }
+      },
+    );
 
-    // Явно запитуємо дозвіл на сповіщення на iOS
+    // Явно запитуємо дозвіл на iOS
     if (Platform.isIOS) {
       final iosPlugin = _plugin.resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin>();
@@ -54,11 +60,9 @@ class NotificationService {
       );
     }
 
-    // Явно реєструємо канал будильника з alarm audio attributes
     if (Platform.isAndroid) {
-      final androidPlugin =
-          _plugin.resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>();
+      final androidPlugin = _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
       await androidPlugin?.createNotificationChannel(
         AndroidNotificationChannel(
           _alarmChannelId,
@@ -85,7 +89,7 @@ class NotificationService {
       channelDescription: 'Дзвінок будильника',
       importance: Importance.max,
       priority: Priority.max,
-      fullScreenIntent: true,           // показує поверх lock-screen
+      fullScreenIntent: true,
       category: AndroidNotificationCategory.alarm,
       playSound: true,
       audioAttributesUsage: AudioAttributesUsage.alarm,
