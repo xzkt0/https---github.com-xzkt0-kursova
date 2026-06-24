@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Потрібно для розрахунку маршруту від вашого місцезнаходження до ФМІ</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Потрібно для фонового розрахунку маршруту до ФМІ</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Потрібно для фонового розрахунку маршруту до ФМІ</string>
 </dict>
 </plist>
