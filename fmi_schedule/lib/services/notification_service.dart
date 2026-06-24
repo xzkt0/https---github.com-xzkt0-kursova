@@ -24,6 +24,7 @@ class NotificationService {
   static Future<void> initialize() async {
     if (!_supported || _initialized) return;
     tz_data.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Europe/Kiev'));
 
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -31,6 +32,9 @@ class NotificationService {
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
+      defaultPresentAlert: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: true,
     );
     const settings = InitializationSettings(
       android: androidSettings,
@@ -38,6 +42,17 @@ class NotificationService {
     );
 
     await _plugin.initialize(settings);
+
+    // Явно запитуємо дозвіл на сповіщення на iOS
+    if (Platform.isIOS) {
+      final iosPlugin = _plugin.resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>();
+      await iosPlugin?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
 
     // Явно реєструємо канал будильника з alarm audio attributes
     if (Platform.isAndroid) {
