@@ -23,7 +23,13 @@ class NotificationService {
     _onAlarmTapped = onAlarmTapped;
     if (!_supported || _initialized) return;
     tz_data.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation('Europe/Kiev'));
+    try {
+      tz.setLocalLocation(tz.getLocation('Europe/Kyiv'));
+    } catch (_) {
+      try {
+        tz.setLocalLocation(tz.getLocation('Europe/Kiev'));
+      } catch (_) {}
+    }
 
     const androidSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');

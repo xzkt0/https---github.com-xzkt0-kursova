@@ -14,9 +14,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (!kIsWeb) {
-    await NotificationService.initialize(onAlarmTapped: _showAlarmDialog);
+    try {
+      await NotificationService.initialize(onAlarmTapped: _showAlarmDialog);
+    } catch (_) {}
     if (Platform.isAndroid) {
-      await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+      try {
+        await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+      } catch (_) {}
     }
   }
 
