@@ -17,11 +17,9 @@ void main() async {
     try {
       await NotificationService.initialize(onAlarmTapped: _showAlarmDialog);
     } catch (_) {}
-    if (Platform.isAndroid) {
-      try {
-        await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-      } catch (_) {}
-    }
+    try {
+      await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+    } catch (_) {}
   }
 
   runApp(const FmiScheduleApp());
