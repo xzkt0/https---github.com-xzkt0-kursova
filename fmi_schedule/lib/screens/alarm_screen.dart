@@ -202,21 +202,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
   Future<void> _triggerDemoAlarm() async {
     setState(() => _demoAlarmLoading = true);
     try {
-      await NotificationService.initialize();
-      final fireAt = DateTime.now().add(const Duration(seconds: 5));
-      await NotificationService.scheduleAlarm(
-        fireAt,
-        'Демо-дзвінок — перевірка будильника',
-      );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Будильник задзвонить через 5 секунд'),
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 4),
-          ),
-        );
-      }
+      await NotificationService.showAlarmNow('Демо-дзвінок — перевірка будильника');
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

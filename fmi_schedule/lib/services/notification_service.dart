@@ -125,6 +125,36 @@ class NotificationService {
     );
   }
 
+  static Future<void> showAlarmNow(String body) async {
+    if (!_supported) return;
+    final androidDetails = AndroidNotificationDetails(
+      _alarmChannelId,
+      'Будильник',
+      channelDescription: 'Дзвінок будильника',
+      importance: Importance.max,
+      priority: Priority.max,
+      fullScreenIntent: true,
+      category: AndroidNotificationCategory.alarm,
+      playSound: true,
+      audioAttributesUsage: AudioAttributesUsage.alarm,
+      enableVibration: true,
+      vibrationPattern: _vibrationPattern,
+      autoCancel: true,
+    );
+    const darwinDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    );
+    await _plugin.show(
+      _alarmNotifId,
+      '⏰ Час вставати!',
+      body,
+      NotificationDetails(android: androidDetails, iOS: darwinDetails),
+    );
+  }
+
   static Future<void> cancelAlarm() async {
     if (!_supported) return;
     await _plugin.cancel(_alarmNotifId);
