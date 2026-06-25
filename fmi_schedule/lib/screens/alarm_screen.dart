@@ -201,29 +201,30 @@ class _AlarmScreenState extends State<AlarmScreen> {
 
   Future<void> _triggerDemoAlarm() async {
     setState(() => _demoAlarmLoading = true);
+    // Надсилаємо нотіфікацію (спрацює коли додаток у фоні)
     try {
       await NotificationService.showAlarmNow('Демо-дзвінок — перевірка будильника');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Сповіщення надіслано'),
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Помилка: $e'),
-            backgroundColor: Colors.red.shade700,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _demoAlarmLoading = false);
+    } catch (_) {}
+    if (mounted) setState(() => _demoAlarmLoading = false);
+    // Показуємо діалог прямо в додатку незалежно від нотіфікацій
+    if (mounted) {
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => AlertDialog(
+          title: const Text('⏰ Час вставати!'),
+          content: const Text('Демо-будильник спрацював'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                NotificationService.cancelAlarm();
+                Navigator.of(ctx).pop();
+              },
+              child: const Text('Вимкнути будильник'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
