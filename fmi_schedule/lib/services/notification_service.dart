@@ -110,7 +110,6 @@ class NotificationService {
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
-      interruptionLevel: InterruptionLevel.timeSensitive,
     );
 
     await _plugin.zonedSchedule(
@@ -141,17 +140,17 @@ class NotificationService {
       vibrationPattern: _vibrationPattern,
       autoCancel: true,
     );
-    const darwinDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      interruptionLevel: InterruptionLevel.timeSensitive,
-    );
     await _plugin.show(
       _alarmNotifId,
       '⏰ Час вставати!',
       body,
-      NotificationDetails(android: androidDetails, iOS: darwinDetails),
+      const NotificationDetails(
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
     );
   }
 

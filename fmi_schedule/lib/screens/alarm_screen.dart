@@ -203,6 +203,15 @@ class _AlarmScreenState extends State<AlarmScreen> {
     setState(() => _demoAlarmLoading = true);
     try {
       await NotificationService.showAlarmNow('Демо-дзвінок — перевірка будильника');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Сповіщення надіслано'),
+            behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
