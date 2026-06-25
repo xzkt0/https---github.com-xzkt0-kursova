@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import '../services/alarm_service.dart';
 import '../services/notification_service.dart';
 import '../services/user_preferences.dart';
@@ -201,12 +202,10 @@ class _AlarmScreenState extends State<AlarmScreen> {
 
   Future<void> _triggerDemoAlarm() async {
     setState(() => _demoAlarmLoading = true);
-    // Надсилаємо нотіфікацію (спрацює коли додаток у фоні)
-    try {
-      await NotificationService.showAlarmNow('Демо-дзвінок — перевірка будильника');
-    } catch (_) {}
+    // Грає звук будильника одразу
+    FlutterRingtonePlayer().playAlarm(looping: true);
     if (mounted) setState(() => _demoAlarmLoading = false);
-    // Показуємо діалог прямо в додатку незалежно від нотіфікацій
+    // Показуємо діалог — закрити можна тільки натиснувши кнопку
     if (mounted) {
       await showDialog(
         context: context,
@@ -217,6 +216,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
           actions: [
             TextButton(
               onPressed: () {
+                FlutterRingtonePlayer().stop();
                 NotificationService.cancelAlarm();
                 Navigator.of(ctx).pop();
               },
