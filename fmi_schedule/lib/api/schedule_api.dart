@@ -15,7 +15,7 @@ class ScheduleApi {
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:8000';
     }
-    return 'http://192.168.1.104:8000';
+    return 'http://172.20.10.2:8000';
   }
 
   static Future<List<Map<String, dynamic>>> fetchGroupsWithId() async {
