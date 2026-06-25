@@ -7,7 +7,7 @@ import 'location_service.dart';
 import 'route_service.dart';
 import 'user_preferences.dart';
 
-bool get _supportsWorkManager => !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+bool get _supportsWorkManager => !kIsWeb && Platform.isAndroid;
 
 const int kMonitorIntervalMinutes = 15;
 
